@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Unlimited GK Quiz</title>
+  <title>Evan's Unlimited GK Quiz</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -94,12 +94,12 @@
         const q = data.results[0];
         const question = {
           q: decodeHTML(q.question),
-          options: shuffle([...q.incorrect_answers, q.correct_answer].map(decodeHTML)),
+          options: shuffle([...q.incorrect_answers.map(decodeHTML), decodeHTML(q.correct_answer)]),
           a: decodeHTML(q.correct_answer)
         };
         return question;
       } catch (err) {
-        return { q: "Error fetching question.", options: ["Try Again"], a: "Try Again" };
+        return { q: "Something went wrong when fetching questions please refresh take your tea go to skibidi toilet if you want wait some time pobarbly 30 to 1min if dosent work contact me the code sucks i wrote this within 20 mins so i know sometimes the code dont work.", options: ["Try Again"], a: "Try Again" };
       }
     }
 
@@ -135,7 +135,7 @@
       q.options.forEach(opt => {
         const btn = document.createElement("button");
         btn.textContent = opt;
-        btn.onclick = () => checkAnswer(opt, q.a);
+        btn.onclick = () => handleAnswer(opt, q.a);
         answersDiv.appendChild(btn);
       });
 
@@ -146,12 +146,14 @@
         document.getElementById("timer").textContent = count;
         if (count === 0) {
           clearInterval(timer);
-          showNextQuestion();
+          document.getElementById("feedback").textContent = `Time's up! Correct answer was: ${q.a}`;
+          document.getElementById("feedback").style.color = "red";
+          setTimeout(showNextQuestion, 1500);
         }
       }, 1000);
     }
 
-    function checkAnswer(selected, correct) {
+    function handleAnswer(selected, correct) {
       clearInterval(timer);
       const feedback = document.getElementById("feedback");
       if (selected === correct) {
@@ -181,7 +183,9 @@
         const entries = [];
         snapshot.forEach(child => {
           const val = child.val();
-          entries.push(val);
+          if (val.player && typeof val.score === 'number') {
+            entries.push(val);
+          }
         });
         entries.sort((a, b) => b.score - a.score);
         entries.slice(0, 10).forEach(entry => {
@@ -189,8 +193,12 @@
           li.textContent = `${entry.player}: ${entry.score}`;
           leaderboardList.appendChild(li);
         });
+      }, {
+        onlyOnce: true
       });
     }
+
+    loadLeaderboard();
   </script>
 </body>
 </html>
