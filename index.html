@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Evan's Unlimited GK Quiz</title>
+  <title>Evan"s Unlimited GK Quiz</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -99,7 +99,7 @@
         };
         return question;
       } catch (err) {
-        return { q: "Something went wrong when fetching questions please refresh take your tea go to skibidi toilet if you want wait some time pobarbly 30 to 1min if dosent work contact me the code sucks i wrote this within 20 mins so i know sometimes the code dont work.", options: ["Try Again"], a: "Try Again" };
+        return { q: "Try refreshing or turning internet off and on yes i know the code sucks i  wrote thiswithin 20  mins.", options: ["Try Again"], a: "Try Again" };
       }
     }
 
@@ -164,7 +164,11 @@
         feedback.textContent = `Wrong! Correct answer was: ${correct}`;
         feedback.style.color = "red";
       }
-      setTimeout(showNextQuestion, 1500);
+      // Ensure the next question always loads regardless of answer
+      setTimeout(() => {
+        feedback.textContent = "";
+        showNextQuestion();
+      }, 1500);
     }
 
     window.stopQuiz = function () {
